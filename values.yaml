@@ -1,0 +1,35 @@
+prometheus:
+  server:
+    serviceMonitor:
+      enabled: true
+    global:
+      scrape_interval: 15s
+  additionalServiceMonitors:
+    - name: fake-gpu
+      namespace: default
+      selector:
+        matchLabels:
+          app: fake-gpu-metrics
+      endpoints:
+        - port: metrics
+          interval: 15s
+
+grafana:
+  sidecar:
+    dashboards:
+      enabled: true
+      label: grafana_dashboard
+      labelValue: "1"
+  
+  datasources:
+    datasources.yaml:
+      apiVersion: 1
+      datasources:
+        - name: Prometheus
+          type: prometheus
+          url: http://dash-prometheus-server.default.svc.cluster.local
+          access: proxy
+          isDefault: true
+
+dashboard:
+  gpuPricePerHour: 3.90

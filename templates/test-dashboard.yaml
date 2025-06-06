@@ -1,0 +1,72 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dash-test-dashboard
+  labels:
+    grafana_dashboard: "1"
+data:
+  test-dashboard.json: |
+    {
+      "uid": "gpu-test",
+      "title": "GPU Test Dashboard",
+      "schemaVersion": 37,
+      "tags": ["gpu", "test"],
+      "timezone": "browser",
+      "version": 1,
+      "refresh": "5s",
+      "panels": [
+        {
+          "id": 1,
+          "title": "DCGM GPU Count",
+          "type": "stat",
+          "targets": [
+            {
+              "expr": "count(DCGM_FI_DEV_GPU_UTIL)",
+              "refId": "A"
+            }
+          ],
+          "gridPos": {"h": 9, "w": 12, "x": 0, "y": 0},
+          "fieldConfig": {
+            "defaults": {
+              "color": {"mode": "palette-classic"},
+              "mappings": [],
+              "thresholds": {
+                "steps": [
+                  {"color": "green", "value": null}
+                ]
+              },
+              "unit": "short"
+            }
+          }
+        },
+        {
+          "id": 2,
+          "title": "GPU Utilization (including zeros)",
+          "type": "stat",
+          "targets": [
+            {
+              "expr": "DCGM_FI_DEV_GPU_UTIL",
+              "refId": "A",
+              "legendFormat": "GPU {{ "{{" }}gpu{{ "}}" }}"
+            }
+          ],
+          "gridPos": {"h": 9, "w": 12, "x": 12, "y": 0},
+          "fieldConfig": {
+            "defaults": {
+              "color": {"mode": "palette-classic"},
+              "mappings": [],
+              "thresholds": {
+                "steps": [
+                  {"color": "green", "value": null}
+                ]
+              },
+              "unit": "percent"
+            }
+          }
+        }
+      ],
+      "time": {
+        "from": "now-5m",
+        "to": "now"
+      }
+    } 

@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: price-dashboard
+  labels:
+    grafana_dashboard: "1"
+data:
+  price_calc.json: |
+    {
+      "uid": "gpu-cost",
+      "title": "GPU Dollars Burned",
+      "tags": ["gpu", "cost"],
+      "panels": [
+        {
+          "type": "stat",
+          "title": "Dollars burned per day",
+          "datasource": "Prometheus",
+          "fieldConfig": { "defaults": { "unit": "currencyUSD", "decimals": 0 } },
+          "targets": [
+            {
+              "expr": "((1 - avg(dcgm_gpu_utilization{job='dcgm-exporter'})/100) * {{ .Values.dashboard.gpuPricePerHour }} * 24)",
+              "format": "time_series"
+            }
+          ]
+        }
+      ],
+      "schemaVersion": 37,
+      "version": 1
+    } 
